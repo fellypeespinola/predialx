@@ -17,7 +17,7 @@
 - Insira a linha e comando `docker-compose up` 
 - Acesse `http://localhost:3000`
 
-## Como executar (Backend e Fronted)
+## Como executar (Mobile)
 
 - Clone o repositório
 - Acesse a pasta `predialx-mobile` pela linha de comando
