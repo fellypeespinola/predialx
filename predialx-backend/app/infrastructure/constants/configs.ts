@@ -1,0 +1,1 @@
+export const SECRET = 'dasdas21eqe5d4a8sd74a8s';

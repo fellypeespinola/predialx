@@ -1,0 +1,9 @@
+#filter-order {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+
+    .ant-picker-range, .ant-select {
+        width: 100%;
+    }
+}

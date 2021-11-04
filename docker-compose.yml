@@ -1,0 +1,69 @@
+version: '3'
+
+services:
+  mysql: 
+    image: mysql:5.7
+    container_name: mysql
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+    networks: 
+      - network
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=predialuser
+      - MYSQL_PASSWORD=predialpass
+      - MYSQL_DATABASE=predialx
+
+  phpmyadmin: 
+    image: phpmyadmin/phpmyadmin:4.7
+    depends_on:
+      - mysql
+    networks:
+      - network
+    ports:
+      - 30002:80
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+    volumes:
+      - /sessions
+    container_name: phpmyadmin
+
+  backend:
+    image: node:14.16.1-alpine3.13
+    container_name: backend
+    ports:
+      - 3001:3001
+    volumes:
+      - ./predialx-backend:/home/node/app
+    working_dir: /home/node/app
+    command: /bin/sh -c "npm install && npx sequelize db:migrate && npx sequelize db:seed:undo:all && npx sequelize db:seed:all && npm run start "
+    environment: 
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=predialuser
+      - MYSQL_PASSWORD=predialpass
+      - MYSQL_DATABASE=predialx
+    networks:
+      - network
+    depends_on:
+      - mysql
+
+  frontend:
+    image: node:14.16.1-alpine3.13
+    container_name: frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./predialx-frontend:/home/node/app
+    working_dir: /home/node/app
+    command: /bin/sh -c "npm install && npm run start"
+    networks:
+      - network
+    depends_on:
+      - backend
+
+networks:
+  network:
+    driver: bridge
